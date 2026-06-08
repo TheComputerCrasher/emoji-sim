@@ -1,4 +1,4 @@
-Made by [Nicky Case](http://ncase.me)
+Made by [Nicky Case](https://ncase.me) and slightly modified by TheComputerCrasher. The following text is the original project's README:
 
 Dedicated to the public domain with [Creative Commons Zero](https://creativecommons.org/publicdomain/zero/1.0/)! I'm giving away all my art/code/words, so that you teachers, scientists, hobbyists, activists, and emoji-lovers can use them however you like! This is for you. 💜
 
@@ -41,8 +41,3 @@ A Narcisstic List of Press This Thing Got
 * **Jan 7th, 2016:** [FlowingData](http://flowingdata.com/2016/01/07/simulate-the-world-as-an-emoji-system-of-rules/)
 * **Jan 5th, 2016:** [FastCoDesign](https://www.fastcodesign.com/3055079/infographic-of-the-day/how-complex-systems-and-chaos-theory-work-according-to-emoji)
 * **Dec 2nd, 2015:** [KillScreen](https://killscreen.com/articles/replicate-the-worlds-most-complex-systems-via-emoji) (this was written up for my prototype, before the final thing was even done)
-
-
-
-
-
