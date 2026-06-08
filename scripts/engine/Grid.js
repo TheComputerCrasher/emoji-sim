@@ -296,14 +296,14 @@ Grid.createUI = function(){
 			.label("This world is a ")
 			.number(config.size, "width", {
 				integer:true,
-				min:5, max:50,
+				min:3, max:100,
 				step:1,
 				message:"/grid/reinitialize"
 			})
 			.label(" by ")
 			.number(config.size, "height", {
 				integer:true,
-				min:5, max:50,
+				min:3, max:100,
 				step:1,
 				message:"/grid/reinitialize"
 			})
