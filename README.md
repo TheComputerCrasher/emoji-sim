@@ -1,4 +1,11 @@
-Made by [Nicky Case](https://ncase.me) and slightly modified by TheComputerCrasher. The following text is the original project's README:
+Originally made by [Nicky Case](https://ncase.me), and modified by TheComputerCrasher. 
+
+My additions:
+* More built-in simulations, including Langton's Ant!
+* More actions and detections, like moving to a specific direction!
+* ...That's kind of it, but what more can you really add to this?
+
+The following text is the original project's README:
 
 Dedicated to the public domain with [Creative Commons Zero](https://creativecommons.org/publicdomain/zero/1.0/)! I'm giving away all my art/code/words, so that you teachers, scientists, hobbyists, activists, and emoji-lovers can use them however you like! This is for you. 💜
 
