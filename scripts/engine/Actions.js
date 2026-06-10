@@ -57,7 +57,8 @@ Actions.if_neighbor = {
 		sign: ">=",
 		num: 3,
 		stateID: 0,
-		actions:[]
+		actions:[],
+        area: 0
 	},
 
 	step: function(agent,config){
@@ -109,11 +110,18 @@ Actions.if_neighbor = {
 					min:0, max:8,
 					step:1
 				})
-				.label(" neighbors are ")
+				.label(" neighbors ")
+                .selector([
+                    { name:"all around", value: "0" },
+                    { name:"to the left", value: "1" },
+                    { name:"to the right", value: "2" },
+                    { name:"above", value: "3" },
+                    { name:"below", value: "4" }
+                ],config,"area")
+                .label(" are ")
 				.stateSelector(config, "stateID")
 				.actionsUI(config.actions)
 				.dom;
-
 	}
 
 };
@@ -168,12 +176,20 @@ Actions.move_to = {
 	step: function(agent,config){
 
 		// Get possible spots
-		var spots;
-		if(config.space==0){ // local
-			spots = Grid.getNeighbors(agent);
-		}else if(config.space==1){ // global
-			spots = Grid.getAllAgents();
-		}
+        var spots;
+        if(config.space==0){ // local
+           spots = Grid.getAllNeighbors(agent);
+        } else if(config.space==1){ // global
+           spots = Grid.getAllAgents();
+        } else if(config.space==2){ // left
+           spots = Grid.getLeftNeighbors(agent);
+        } else if(config.space==3){ // right
+           spots = Grid.getRightNeighbors(agent);
+        } else if(config.space==4){ // above
+           spots = Grid.getAboveNeighbors(agent);
+        } else if(config.space==5){ // below
+           spots = Grid.getBelowNeighbors(agent);
+        }
 
 		// Filter for only those whose states == spotStateID
 		var eligible = spots.filter(function(agent){
@@ -199,18 +215,19 @@ Actions.move_to = {
 	ui: function(config){
 
 		return EditorHelper()
-				.label("Move to ")
+				.label("Move ")
 				.selector([
-					{ name:"a neighboring", value:0 },
-					{ name:"any", value:1 }
+					{ name:"to a neighboring", value:0 },
+					{ name:"to any", value:1 },
+                    { name:"left to",value:2 },
+                    { name:"right to",value:3 },
+                    { name:"up to",value:4 },
+                    { name:"down to",value:5 }
 				],config,"space")
 				.stateSelector(config, "spotStateID")
-				.label(" spot & leave behind ")
+				.label(" & leave behind ")
 				.stateSelector(config, "leaveStateID")
 				.dom;
-
 	}
-
 }; 
-
 })(window);

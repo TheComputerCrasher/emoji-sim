@@ -203,9 +203,10 @@ subscribe("/grid/updateAgents",Grid.updateAgents);
 
 Grid.NEIGHBORHOOD_MOORE = "moore";
 Grid.NEIGHBORHOOD_NEUMANN = "neumann";
-Grid.getNeighbors = function(agent){
+Grid.getNeighborCoords = function(agent){
 
 	// Oh WOW Polygon's get-neighbor code was O(n^2) what the FU--
+    // Honestly no idea what Nicky was talking about here... -TheComputerCrasher
 
 	// First, create all possible neighbor coords
 	var x = agent.x;
@@ -237,18 +238,71 @@ Grid.getNeighbors = function(agent){
 		return true;
 	});
 
-	// Then, get all neighbors at those coords
-	var neighbors = [];
-	for(var i=0;i<coords.length;i++){
-		var x = coords[i][0];
-		var y = coords[i][1];
-		neighbors.push(Grid.array[y][x]);
-	}
-
 	// Return!
-	return neighbors;
+	return coords;
 
 };
+
+// Separated getting coords from getting neighbors to allow different sections of neighbors
+Grid.getAllNeighbors = function(agent){
+   var coords = Grid.getNeighborCoords(agent);
+   var neighbors = [];
+   for(var i=0;i<coords.length;i++){
+      var x = coords[i][0];
+      var y = coords[i][1];
+      neighbors.push(Grid.array[y][x]);
+   }
+   return neighbors;
+}
+
+// Filter for coordinates left/right/above/below the current cell and puts them into an array
+Grid.getLeftNeighbors = function(agent){
+    var coords = Grid.getNeighborCoords(agent);
+
+    return coords
+        .filter(function(coord){
+            return coord[0] < agent.x;
+        })
+        .map(function(coord){
+            return Grid.array[coord[1]][coord[0]];
+        });
+}
+
+Grid.getRightNeighbors = function(agent){
+    var coords = Grid.getNeighborCoords(agent);
+
+    return coords
+        .filter(function(coord){
+            return coord[0] > agent.x;
+        })
+        .map(function(coord){
+            return Grid.array[coord[1]][coord[0]];
+        });
+}
+
+Grid.getAboveNeighbors = function(agent){
+    var coords = Grid.getNeighborCoords(agent);
+
+    return coords
+        .filter(function(coord){
+            return coord[1] < agent.y;
+        })
+        .map(function(coord){
+            return Grid.array[coord[1]][coord[0]];
+        });
+}
+
+Grid.getBelowNeighbors = function(agent){
+    var coords = Grid.getNeighborCoords(agent);
+
+    return coords
+        .filter(function(coord){
+            return coord[1] > agent.y;
+        })
+        .map(function(coord){
+            return Grid.array[coord[1]][coord[0]];
+        });
+}
 
 // Get ALL agents (just collapses to a single array)
 Grid.getAllAgents = function(){
@@ -269,7 +323,7 @@ Grid.getAllAgents = function(){
 // Count neighbors of a certain state
 Grid.countNeighbors = function(agent,stateID){
 	var count = 0;
-	var neighbors = Grid.getNeighbors(agent);
+	var neighbors = Grid.getAllNeighbors(agent);
 	for(var i=0;i<neighbors.length;i++){
 		if(neighbors[i].stateID==stateID) count++;
 	}
@@ -321,7 +375,5 @@ Grid.createUI = function(){
 			})
 			.label(" to be its neighboring spots.")
 			.dom;
-
 };
-
 })(window);
