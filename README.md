@@ -3,6 +3,7 @@ Originally made by [Nicky Case](https://ncase.me), and modified by TheComputerCr
 My additions:
 * More built-in simulations, including Langton's Ant!
 * More actions and detections, like moving to a specific direction!
+* Backwards compatibility with simulations from the original!
 * ...That's kind of it, but what more can you really add to this?
 
 The following text is the original project's README:
