@@ -63,11 +63,40 @@ Actions.if_neighbor = {
 
 	step: function(agent,config){
 
-		// First, get num of actual neighbors that are STATE
-		var count = Grid.countNeighbors(agent, config.stateID);
+    // Get the correct set of neighbors (left, right, above, below)
+    var neighbors;
 
-		// Did condition pass?
-		var pass;
+    switch(config.area){
+        case "1":
+            neighbors = Grid.getLeftNeighbors(agent);
+            break;
+
+        case "2":
+            neighbors = Grid.getRightNeighbors(agent);
+            break;
+
+        case "3":
+            neighbors = Grid.getAboveNeighbors(agent);
+            break;
+
+        case "4":
+            neighbors = Grid.getBelowNeighbors(agent);
+            break;
+
+        default:
+            neighbors = Grid.getAllNeighbors(agent);
+    }
+
+    // Count neighbors of the requested state
+    var count = 0;
+    for(var i=0;i<neighbors.length;i++){
+        if(neighbors[i].stateID == config.stateID){
+            count++;
+        }
+    }
+
+    // Did condition pass?
+    var pass;
 		switch(config.sign){
 			case "<":
 				pass = (count<config.num);
@@ -112,11 +141,11 @@ Actions.if_neighbor = {
 				})
 				.label(" neighbors ")
                 .selector([
-                    { name:"all around", value: "0" },
-                    { name:"to the left", value: "1" },
-                    { name:"to the right", value: "2" },
-                    { name:"above", value: "3" },
-                    { name:"below", value: "4" }
+                    { name:"all around", value: 0 },
+                    { name:"to the left", value: 1 },
+                    { name:"to the right", value: 2 },
+                    { name:"above", value: 3 },
+                    { name:"below", value: 4 }
                 ],config,"area")
                 .label(" are ")
 				.stateSelector(config, "stateID")
