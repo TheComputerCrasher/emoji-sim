@@ -1,12 +1,12 @@
-Originally made by [Nicky Case](https://ncase.me), and modified by TheComputerCrasher. 
+Originally made by [Nicky Case](https://ncase.me/), and modified by TheComputerCrasher. 
 
 My additions:
-* More built-in simulations, including Langton's Ant!
+* More built-in simulations, including [Langton's Ant](https://wikipedia.org/wiki/Langton%27s_ant) and [Parable of the Polygons](https://ncase.me/polygons/)!
 * More actions and detections, like moving to a specific direction!
 * Backwards compatibility with simulations from the original!
 * ...That's kind of it, but what more can you really add to this?
 
-The following text is the original project's README:
+The following text is the original project's README, and nearly everything there applies to this as well:
 
 Dedicated to the public domain with [Creative Commons Zero](https://creativecommons.org/publicdomain/zero/1.0/)! I'm giving away all my art/code/words, so that you teachers, scientists, hobbyists, activists, and emoji-lovers can use them however you like! This is for you. 💜
 
