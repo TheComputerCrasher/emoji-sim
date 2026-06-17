@@ -68,19 +68,35 @@ Actions.if_neighbor = {
 
     switch(config.area){
         case "1":
-            neighbors = Grid.getLeftNeighbors(agent);
+            neighbors = Grid.getLeftNeighbors(agent,true); // the boolean decides whether it should check all neighbors or just the middle one
             break;
 
         case "2":
-            neighbors = Grid.getRightNeighbors(agent);
+            neighbors = Grid.getRightNeighbors(agent,true);
             break;
 
         case "3":
-            neighbors = Grid.getAboveNeighbors(agent);
+            neighbors = Grid.getAboveNeighbors(agent,true);
             break;
 
         case "4":
-            neighbors = Grid.getBelowNeighbors(agent);
+            neighbors = Grid.getBelowNeighbors(agent,true);
+            break;
+
+		case "5":
+            neighbors = Grid.getLeftNeighbors(agent,false);
+            break;
+
+        case "6":
+            neighbors = Grid.getRightNeighbors(agent,false);
+            break;
+
+        case "7":
+            neighbors = Grid.getAboveNeighbors(agent,false);
+            break;
+
+        case "8":
+            neighbors = Grid.getBelowNeighbors(agent,false);
             break;
 
         default:
@@ -145,7 +161,11 @@ Actions.if_neighbor = {
                     { name:"to the left", value: 1 },
                     { name:"to the right", value: 2 },
                     { name:"above", value: 3 },
-                    { name:"below", value: 4 }
+                    { name:"below", value: 4 },
+					{ name:"directly left", value: 5 },
+                    { name:"directly right", value: 6 },
+                    { name:"directly above", value: 7 },
+                    { name:"directly below", value: 8 }
                 ],config,"area")
                 .label(" are ")
 				.stateSelector(config, "stateID")
@@ -206,19 +226,27 @@ Actions.move_to = {
 
 		// Get possible spots
         var spots;
-        if(config.space==0){ // local
+        if(config.space==0){ // all around
            spots = Grid.getAllNeighbors(agent);
         } else if(config.space==1){ // global
            spots = Grid.getAllAgents();
-        } else if(config.space==2){ // left
-           spots = Grid.getLeftNeighbors(agent);
-        } else if(config.space==3){ // right
-           spots = Grid.getRightNeighbors(agent);
-        } else if(config.space==4){ // above
-           spots = Grid.getAboveNeighbors(agent);
-        } else if(config.space==5){ // below
-           spots = Grid.getBelowNeighbors(agent);
-        }
+        } else if(config.space==2){ // all left
+           spots = Grid.getLeftNeighbors(agent,true);
+        } else if(config.space==3){ // all right
+           spots = Grid.getRightNeighbors(agent,true);
+        } else if(config.space==4){ // all above
+           spots = Grid.getAboveNeighbors(agent,true);
+        } else if(config.space==5){ // all below
+           spots = Grid.getBelowNeighbors(agent,true);
+		} else if(config.space==6){ // one left
+           spots = Grid.getLeftNeighbors(agent,false);
+        } else if(config.space==7){ // one right
+           spots = Grid.getRightNeighbors(agent,false);
+        } else if(config.space==8){ // one above
+           spots = Grid.getAboveNeighbors(agent,false);
+        } else if(config.space==9){ // one below
+           spots = Grid.getBelowNeighbors(agent,false);
+		}
 
 		// Filter for only those whose states == spotStateID
 		var eligible = spots.filter(function(agent){
@@ -251,7 +279,11 @@ Actions.move_to = {
                     { name:"left to",value:2 },
                     { name:"right to",value:3 },
                     { name:"up to",value:4 },
-                    { name:"down to",value:5 }
+                    { name:"down to",value:5 },
+                    { name:"directly left to",value:6 },
+                    { name:"directly right to",value:7 },
+                    { name:"directly up to",value:8 },
+                    { name:"directly down to",value:9 }
 				],config,"space")
 				.stateSelector(config, "spotStateID")
 				.label(" & leave behind ")

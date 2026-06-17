@@ -255,53 +255,101 @@ Grid.getAllNeighbors = function(agent){
    return neighbors;
 }
 
-// Filter for coordinates left/right/above/below the current cell and puts them into an array
-Grid.getLeftNeighbors = function(agent){
+// Filter for coordinates left/right/above/below the current cell and put them into an array.
+
+// This is definitely not the best way to do it, but:
+// if "all neighbors" is true, get any random neighbor in that direction. 
+// else, get only the one right beside.
+Grid.getLeftNeighbors = function(agent,all){
     var coords = Grid.getNeighborCoords(agent);
 
-    return coords
-        .filter(function(coord){
-            return coord[0] < agent.x;
-        })
-        .map(function(coord){
-            return Grid.array[coord[1]][coord[0]];
-        });
+	if(all == true){
+    	return coords
+        	.filter(function(coord){
+            	return coord[0] < agent.x; // get any neighbor to the left
+        	})
+        	.map(function(coord){
+            	return Grid.array[coord[1]][coord[0]]; // find it in the grid array
+        	});
+	}
+	else{
+		return coords
+        	.filter(function(coord){
+            	return coord[0] < agent.x && coord[1] == agent.y; // only get the one with the same y-coordinate
+        	})
+        	.map(function(coord){
+            	return Grid.array[coord[1]][coord[0]]; // find it in the grid array as usual
+        	});
+	}
 }
 
-Grid.getRightNeighbors = function(agent){
+Grid.getRightNeighbors = function(agent,all){
     var coords = Grid.getNeighborCoords(agent);
 
-    return coords
+	if(all == true){
+		return coords
+			.filter(function(coord){
+				return coord[0] > agent.x;
+			})
+			.map(function(coord){
+				return Grid.array[coord[1]][coord[0]];
+			});
+	}
+	else{
+		return coords
         .filter(function(coord){
-            return coord[0] > agent.x;
+            return coord[0] > agent.x && coord[1] == agent.y;
         })
         .map(function(coord){
             return Grid.array[coord[1]][coord[0]];
         });
+	}
 }
 
-Grid.getAboveNeighbors = function(agent){
+Grid.getAboveNeighbors = function(agent,all){
     var coords = Grid.getNeighborCoords(agent);
 
-    return coords
+	if(all == true){
+		return coords
+			.filter(function(coord){
+				return coord[1] < agent.y;
+			})
+			.map(function(coord){
+				return Grid.array[coord[1]][coord[0]];
+			});
+	}
+	else{
+		return coords
         .filter(function(coord){
-            return coord[1] < agent.y;
+            return coord[1] < agent.y && coord[0] == agent.x;
         })
         .map(function(coord){
             return Grid.array[coord[1]][coord[0]];
         });
+	}
 }
 
-Grid.getBelowNeighbors = function(agent){
+Grid.getBelowNeighbors = function(agent,all){
     var coords = Grid.getNeighborCoords(agent);
 
-    return coords
-        .filter(function(coord){
-            return coord[1] > agent.y;
-        })
-        .map(function(coord){
-            return Grid.array[coord[1]][coord[0]];
-        });
+	if(all == true){
+		return coords
+			.filter(function(coord){
+				return coord[1] > agent.y;
+			})
+			.map(function(coord){
+				return Grid.array[coord[1]][coord[0]];
+			});
+	}
+	else{
+		return coords
+			.filter(function(coord){
+				return coord[1] > agent.y && coord[0] == agent.x;
+			})
+			.map(function(coord){
+				return Grid.array[coord[1]][coord[0]];
+			});
+		}
 }
 
 // Get ALL agents (just collapses to a single array)
