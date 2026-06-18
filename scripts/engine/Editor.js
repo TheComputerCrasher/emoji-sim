@@ -45,7 +45,7 @@ Editor.create = function(){
 			id: Model.generateNewID(),
 			icon: emoji.icon,
 			name: "[new thing]",
-			description: "Click icon & paste in new emoji:\nMac: press control+command+space\nOther: copy from Emojipedia.org",
+			description: "Click icon & paste in new emoji:\nMac: press control+command+space\nWindows 11: press Windows key+period\nOther: copy from Emojipedia.org",
 			actions: []
 		};
 
@@ -200,8 +200,10 @@ Editor.create = function(){
 		var creditsLabel = Editor.createLabel(`
 			Made by <a href='https://ncase.me/' target='_blank'>Nicky Case</a>,
 			with the 💖 of their supporters
-			<a href='https://www.patreon.com/ncase' target='_blank'>on Patreon</a>~
-			p.s: <a href='https://github.com/ncase/sim' target='_blank'>open source!</a>
+			<a href='https://www.patreon.com/ncase' target='_blank'>on Patreon</a>,
+			and modified by <a href='https://github.com/TheComputerCrasher/' target='_blank'>TheComputerCrasher</a>.
+			<br>
+			p.s: <a href='https://github.com/thecomputercrasher/emoji-sim' target='_blank'>open source!</a>
 		`);
 		creditsLabel.style.display = "block";
 		creditsLabel.style.margin = "30px 0";
