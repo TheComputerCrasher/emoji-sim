@@ -1,7 +1,7 @@
 Originally made by [Nicky Case](https://ncase.me/), and modified by TheComputerCrasher. 
 
 My additions:
-* More built-in simulations, including [Langton's Ant](https://wikipedia.org/wiki/Langton%27s_ant) and [Parable of the Polygons](https://ncase.me/polygons/)!
+* More built-in simulations, including [Langton's Ant](https://wikipedia.org/wiki/Langton%27s_ant) and (a very basic version of) [Sandboxels](https://sandboxels.r74n.com/)!
 * More actions and detections, like moving to a specific direction!
 * Backwards compatibility with simulations from the original!
 * ...That's kind of it, but what more can you really add to this?
