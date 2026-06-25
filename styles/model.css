@@ -79,7 +79,6 @@ THE EDITOR
 	font-weight: bold;
 }
 #editor textarea{
-
 	font-family: 'OpenSansEmoji', Helvetica, Arial, sans-serif;
     font-weight: 100;
     font-size: 16px;
@@ -91,7 +90,6 @@ THE EDITOR
 	width: 100%;
     resize: none;
     overflow: hidden;
-    
 }
 #editor .editor_textarea{
     background: #ccc;
@@ -110,7 +108,6 @@ THE EDITOR
 	background: none;
 	border:1px solid #aaa;
 	border-radius: 3px;
-
 }
 #editor input.editor_icon{
 	font-size:30px;
@@ -121,7 +118,6 @@ THE EDITOR
 	border-right: none;
 	display: block;
 	float: left;
-
 	border-radius: 5px 0 0 5px;
 }
 #editor input[type=text].editor_name{
@@ -131,18 +127,15 @@ THE EDITOR
 	padding: 5px 10px;
 	display: block;
 	float: left;
-
 	border-radius: 0 5px 5px 0;
 }
 #editor input[type=text].editor_number{
 	font-size: 16px;
     width: 40px;
     cursor: col-resize;
-
     border:none;
     border-bottom: 2px dotted #aaa;
     border-radius: 0;
-
 }
 #editor .editor_new_action{
 	position: relative;
@@ -176,23 +169,22 @@ THE EDITOR
 	width: 240px;
 	height: 40px;
 	background: #aaa;
-
 	font-family: 'OpenSansEmoji', Helvetica, Arial, sans-serif;
 	font-weight: 100;
 	font-size: 20px;
 	line-height: 40px;
 	color: #ddd;
-
 	cursor: pointer;
-
 }
 #editor .editor_fancy_button:hover{
 	background: #b1b1b1;
 }
-#editor .editor_fancy_button#save_changes .editor_fancy_button#load_changes{
+#editor .editor_fancy_button#save_changes:hover, /*#editor .editor_fancy_button#load_changes:hover,*/ #editor .editor_fancy_button#undo_changes:hover, #editor .editor_fancy_button#add_state:hover {
+/*#editor .editor_fancy_button:hover{*/
 	background: #333;
 }
-#editor .editor_fancy_button#save_changes:hover .editor_fancy_button#load_changes:hover{
+#editor .editor_fancy_button#save_changes, /*#editor .editor_fancy_button#load_changes,*/ #editor .editor_fancy_button#undo_changes, #editor .editor_fancy_button#add_state {
+/*#editor .editor_fancy_button{*/
 	background: #555;
 }
 #editor .editor_fancy_button span{
