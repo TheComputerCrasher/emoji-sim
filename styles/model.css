@@ -189,10 +189,10 @@ THE EDITOR
 #editor .editor_fancy_button:hover{
 	background: #b1b1b1;
 }
-#editor .editor_fancy_button#save_changes{
+#editor .editor_fancy_button#save_changes .editor_fancy_button#load_changes{
 	background: #333;
 }
-#editor .editor_fancy_button#save_changes:hover{
+#editor .editor_fancy_button#save_changes:hover .editor_fancy_button#load_changes:hover{
 	background: #555;
 }
 #editor .editor_fancy_button span{
