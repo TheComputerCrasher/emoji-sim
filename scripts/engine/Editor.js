@@ -36,6 +36,7 @@ Editor.create = function(){
 	// Button - Add a state!
 	var addState = document.createElement("div");
 	addState.className = "editor_fancy_button";
+	addState.id = "add_state";
 	addState.innerHTML = "<span>+</span>make new thing";
 	addState.onclick = function(){
 
@@ -87,19 +88,20 @@ Editor.create = function(){
 	///// META STUFF /////
 	//////////////////////
 
-	/*var title = Editor.createTitle("<span>MISC</span> STUFF");
-	Editor.dom.appendChild(title);*/
+	var title = Editor.createTitle("<span>MISC</span> STUFF");
+	Editor.dom.appendChild(title);
 
 	// Reset to original
 	var undoChanges = document.createElement("div");
 	undoChanges.className = "editor_fancy_button";
+	undoChanges.id = "undo_changes"
 	undoChanges.style.marginBottom = "20px";
 	undoChanges.innerHTML = "<span style='font-size:25px; line-height:40px;'>⟳</span>undo all changes";
 	undoChanges.onclick = function(){
 		publish("/meta/reset");
 		Model.returnToBackup();
 	};
-	//Editor.dom.appendChild(undoChanges);
+	Editor.dom.appendChild(undoChanges);
 
 	// If options allow saving changes, and export data
 	if(UI.options.edit==UI.ADVANCED){
@@ -124,7 +126,7 @@ Editor.create = function(){
 		// Save your changes, label & link, label & embed
 		
 		// save label
-		var saveLabel = Editor.createLabel("when you save your model, you'll get a link here:")
+		var saveLabel = Editor.createLabel("Click this button to save your model's rules! (It doesn't save the world state though.) When you save, you'll get a link here:")
 		saveLabel.style.display = "block";
 		saveLabel.style.margin = "10px 0";
 		Editor.dom.appendChild(saveLabel);
@@ -163,7 +165,7 @@ Editor.create = function(){
 		// on save success
 		subscribe("/save/success",function(link){
 
-			saveLabel.innerHTML = "here you go! <a href='"+link+"' target='_blank'>(open in new tab)</a> (shrink link with <a href='https://tinyurl.com/' target='_blank'>TinyURL</a>)";
+			saveLabel.innerHTML = "Here you go! <a href='"+link+"' target='_blank'>(open in new tab)</a> (shrink link with a site like <a href='https://tinyurl.com/' target='_blank'>TinyURL</a>)";
 			saveLink.value = link;
 			saveLink.select();
 			embedLabel.innerHTML = "to embed it, paste this code in your site:";
@@ -171,7 +173,6 @@ Editor.create = function(){
 			var width = 800;
 			var height = Math.round(width/(document.body.clientWidth/document.body.clientHeight));
 			embedLink.value = '<iframe width="'+width+'" height="'+height+'" src="'+link+'" frameborder="0"></iframe>';
-			
 		});
 
 		// Export your data
@@ -180,39 +181,85 @@ Editor.create = function(){
 		exportModel.id = "save_changes";
 		exportModel.innerHTML = "<span style='font-size:25px; line-height:35px; font-family:monospace'>{}</span>export model";
 		exportModel.onclick = function(){
-			window.open("data:text/json;charset=utf-8,"+JSON.stringify(Model.data));
+			// This code is copied from https://www.delftstack.com/howto/javascript/javascript-create-and-save-files/
+			// Basically it makes a link from the model data, clicks it for the download, and removes the link.
+			const modelData = JSON.stringify(Model.data);
+			const blob = new Blob([modelData], { type: 'text/json' });
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = 'model.json';
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+			URL.revokeObjectURL(url);
 		};
 		Editor.dom.appendChild(exportModel);
 
 		// export label 
 		var exportLabel = Editor.createLabel(
-			"This is for those of you who want to save your sim to your own computertron! "+
-			"<a href='https://github.com/ncase/sim#how-to-run-this-on-your-own-computertron' target='_blank'>[How To Do That]</a> "+
-			"Click the above button to open your sim's data in a new tab. "+
-			"Save it as <span style='font-family:monospace'>[your sim name].json</span>. "+
-			"(Remember the \".json\"! It's important!)"
+			"This button will save your sim as a file instead of a link. "+
+			"You can import it later with the button below, "+
+			"or you can run this file locally! "+
+			"<a href='https://github.com/ncase/sim#how-to-run-this-on-your-own-computertron' target='_blank'>[How To Do That]</a><br><br> "
 		);
 		exportLabel.style.display = "block";
 		exportLabel.style.margin = "10px 0";
 		Editor.dom.appendChild(exportLabel);
 
+
+		// Import button!!! Finally!!! (not quite yet)
+		var importButton = document.createElement("div");
+		importButton.className = "editor_fancy_button";
+		importButton.id = "load_changes";
+		importButton.innerHTML = "<span style='font-size:25px; line-height:35px; font-family:monospace'>{}</span>import model";
+		importButton.accept = "text/json";
+
+		// import label
+		var importLabel = Editor.createLabel(
+			"Coming soon..."
+		);
+		importLabel.style.display = "block";
+		importLabel.style.margin = "10px 0";
+		
+
+		// hidden input
+		var importModel = document.createElement("input");
+		importModel.type = "file";
+		importModel.style.display = "none";
+		importModel.addEventListener("change", () => {
+			const file = importButton.files[0];
+			if (!file) return;
+			const reader = new FileReader();
+			reader.onload = () => {
+				return reader.result;
+			};
+			Load(reader.readAsText(file));
+		});
+
+		importButton.onclick = () => {
+			importModel.value = "";
+			importModel.click();
+		};
+
+		Editor.dom.appendChild(importModel);
+		Editor.dom.appendChild(importButton);
+		Editor.dom.appendChild(importLabel);
+
 		// CREDITS
 		var creditsLabel = Editor.createLabel(`
-			Made by <a href='https://ncase.me/' target='_blank'>Nicky Case</a>,
+			Originally made by <a href='https://ncase.me/' target='_blank'>Nicky Case</a>,
 			with the 💖 of their supporters
 			<a href='https://www.patreon.com/ncase' target='_blank'>on Patreon</a>,
 			and modified by <a href='https://github.com/TheComputerCrasher/' target='_blank'>TheComputerCrasher</a>.
 			<br>
-			p.s: <a href='https://github.com/thecomputercrasher/emoji-sim' target='_blank'>open source!</a>
+			p.s: <a href='https://github.com/thecomputercrasher/emoji-sim' target='_blank'>public domain!</a>
 		`);
 		creditsLabel.style.display = "block";
 		creditsLabel.style.margin = "30px 0";
 		creditsLabel.style.fontSize = "22px";
 		Editor.dom.appendChild(creditsLabel);
-
 	}
-
-
 };
 
 Editor.createTitle = function(html){
@@ -253,7 +300,6 @@ Editor.createTextArea = function(config, propName, options){
 	});
 
 	return input;
-
 };
 
 Editor.createStatesUI = function(dom, stateConfigs){
@@ -264,7 +310,6 @@ Editor.createStatesUI = function(dom, stateConfigs){
 		var stateDOM = Editor.createStateUI(stateConfig);
 		dom.appendChild(stateDOM);
 	}
-
 };
 
 Editor.createStateUI = function(stateConfig){

@@ -63,7 +63,7 @@ Actions.if_neighbor = {
 
 	step: function(agent,config){
 
-    // Get the correct set of neighbors (left, right, above, below)
+    // Get the correct set of neighbors (left, right, above, below, or all)
     var neighbors;
 
     switch(config.area){
@@ -98,9 +98,13 @@ Actions.if_neighbor = {
         case "8":
             neighbors = Grid.getBelowNeighbors(agent,false);
             break;
+		
+		case "9":
+            neighbors = Grid.getAllNeighbors(agent,false);
+            break;
 
         default:
-            neighbors = Grid.getAllNeighbors(agent);
+            neighbors = Grid.getAllNeighbors(agent,true);
     }
 
     // Count neighbors of the requested state
@@ -156,7 +160,10 @@ Actions.if_neighbor = {
 					step:1
 				})
 				.label(" neighbors ")
-                .selector([
+                .selector([ 
+					// lots more neighbor options than the original.
+					// is it confusing? probably.
+					// do I care? not really, no one's gonna use this.
                     { name:"all around", value: 0 },
                     { name:"to the left", value: 1 },
                     { name:"to the right", value: 2 },
@@ -165,7 +172,8 @@ Actions.if_neighbor = {
 					{ name:"directly left", value: 5 },
                     { name:"directly right", value: 6 },
                     { name:"directly above", value: 7 },
-                    { name:"directly below", value: 8 }
+                    { name:"directly below", value: 8 },
+					{ name:"directly adjacent", value: 9 }
                 ],config,"area")
                 .label(" are ")
 				.stateSelector(config, "stateID")
@@ -226,8 +234,8 @@ Actions.move_to = {
 
 		// Get possible spots
         var spots;
-        if(config.space==0){ // all around
-           spots = Grid.getAllNeighbors(agent);
+        if(config.space==0){ // all neighbors (Moore neighborhood)
+           spots = Grid.getAllNeighbors(agent,true);
         } else if(config.space==1){ // global
            spots = Grid.getAllAgents();
         } else if(config.space==2){ // all left
@@ -238,15 +246,18 @@ Actions.move_to = {
            spots = Grid.getAboveNeighbors(agent,true);
         } else if(config.space==5){ // all below
            spots = Grid.getBelowNeighbors(agent,true);
-		} else if(config.space==6){ // one left
+		} else if(config.space==6){ // directly left (Neumann neighborhood)
            spots = Grid.getLeftNeighbors(agent,false);
-        } else if(config.space==7){ // one right
+        } else if(config.space==7){ // directly right
            spots = Grid.getRightNeighbors(agent,false);
-        } else if(config.space==8){ // one above
+        } else if(config.space==8){ // directly above
            spots = Grid.getAboveNeighbors(agent,false);
-        } else if(config.space==9){ // one below
+        } else if(config.space==9){ // directly below
            spots = Grid.getBelowNeighbors(agent,false);
+		} else if(config.space==10){ // all directly adjacent
+           spots = Grid.getAllNeighbors(agent,false);
 		}
+
 
 		// Filter for only those whose states == spotStateID
 		var eligible = spots.filter(function(agent){
@@ -273,13 +284,18 @@ Actions.move_to = {
 
 		return EditorHelper()
 				.label("Move ")
-				.selector([
-					{ name:"to a neighboring", value:0 },
+				.selector([ 
+					// WOWIE SO MUCH MOVEMENT
+					// Yes they're out of order here, but this is just the UI.
+					// As long as they stay in order in the code,
+					// it should be fine to change their positions here.
 					{ name:"to any", value:1 },
+					{ name:"to any neighboring", value:0 },
                     { name:"left to",value:2 },
                     { name:"right to",value:3 },
                     { name:"up to",value:4 },
                     { name:"down to",value:5 },
+					{ name:"to a directly adjacent",value:10 },
                     { name:"directly left to",value:6 },
                     { name:"directly right to",value:7 },
                     { name:"directly up to",value:8 },

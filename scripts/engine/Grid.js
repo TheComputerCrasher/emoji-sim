@@ -201,12 +201,13 @@ subscribe("/grid/updateAgents",Grid.updateAgents);
 // External Helper Methods //
 /////////////////////////////
 
+// Why did Nicky set global variables to always be the same value?? Whatever, it's fine
 Grid.NEIGHBORHOOD_MOORE = "moore";
 Grid.NEIGHBORHOOD_NEUMANN = "neumann";
-Grid.getNeighborCoords = function(agent){
+Grid.getNeighborCoords = function(agent,all){
 
 	// Oh WOW Polygon's get-neighbor code was O(n^2) what the FU--
-    // Honestly no idea what Nicky was talking about here... -TheComputerCrasher
+    // Honestly no idea what Nicky was talking about here... 
 
 	// First, create all possible neighbor coords
 	var x = agent.x;
@@ -214,20 +215,26 @@ Grid.getNeighborCoords = function(agent){
 
 	// What kinda neighborhood
 	var coords;
-	var hood = Model.data.world.neighborhood;
+	//var hood = Model.data.world.neighborhood;
+	if(all == true){
+		var hood = Grid.NEIGHBORHOOD_MOORE
+	} else {
+		var hood = Grid.NEIGHBORHOOD_NEUMANN
+	}
 	if(hood==Grid.NEIGHBORHOOD_MOORE){
 		coords = [
 			[x-1,y-1], [x,  y-1], [x+1,y-1],
 			[x-1,y  ],            [x+1,y  ],
 			[x-1,y+1], [x,  y+1], [x+1,y+1],
 		];
-	}else if(hood==Grid.NEIGHBORHOOD_NEUMANN){
+	} else if(hood==Grid.NEIGHBORHOOD_NEUMANN){
 		coords = [
 			[x,y-1], [x-1,y], [x+1,y], [x,y+1],
 		];
 	}
 
-	// Then, filter out ones that can't work
+	// Then, filter out coords that can't work
+	// i.e. ones that are off the map
 	coords = coords.filter(function(coord){
 		var x = coord[0];
 		var y = coord[1];
@@ -244,8 +251,8 @@ Grid.getNeighborCoords = function(agent){
 };
 
 // Separated getting coords from getting neighbors to allow different sections of neighbors
-Grid.getAllNeighbors = function(agent){
-   var coords = Grid.getNeighborCoords(agent);
+Grid.getAllNeighbors = function(agent,all){
+   var coords = Grid.getNeighborCoords(agent,all);
    var neighbors = [];
    for(var i=0;i<coords.length;i++){
       var x = coords[i][0];
@@ -257,102 +264,53 @@ Grid.getAllNeighbors = function(agent){
 
 // Filter for coordinates left/right/above/below the current cell and put them into an array.
 
-// This is definitely not the best way to do it, but:
-// if "all neighbors" is true, get any random neighbor in that direction. 
-// else, get only the one right beside.
+// Because Grid.getNeighborCoords already filters whether it's Neumann or Moore,
+// we don't need anything fancy here.
 Grid.getLeftNeighbors = function(agent,all){
-    var coords = Grid.getNeighborCoords(agent);
-
-	if(all == true){
-    	return coords
-        	.filter(function(coord){
-            	return coord[0] < agent.x; // get any neighbor to the left
-        	})
-        	.map(function(coord){
-            	return Grid.array[coord[1]][coord[0]]; // find it in the grid array
-        	});
-	}
-	else{
-		return coords
-        	.filter(function(coord){
-            	return coord[0] < agent.x && coord[1] == agent.y; // only get the one with the same y-coordinate
-        	})
-        	.map(function(coord){
-            	return Grid.array[coord[1]][coord[0]]; // find it in the grid array as usual
-        	});
-	}
+    var coords = Grid.getNeighborCoords(agent,all);
+	return coords
+		.filter(function(coord){
+			return coord[0] < agent.x; // get any neighbor to the left
+		})
+		.map(function(coord){
+			return Grid.array[coord[1]][coord[0]]; // find it in the grid array
+		});
 }
 
 Grid.getRightNeighbors = function(agent,all){
-    var coords = Grid.getNeighborCoords(agent);
-
-	if(all == true){
-		return coords
-			.filter(function(coord){
-				return coord[0] > agent.x;
-			})
-			.map(function(coord){
-				return Grid.array[coord[1]][coord[0]];
-			});
-	}
-	else{
-		return coords
-        .filter(function(coord){
-            return coord[0] > agent.x && coord[1] == agent.y;
-        })
-        .map(function(coord){
-            return Grid.array[coord[1]][coord[0]];
-        });
-	}
+    var coords = Grid.getNeighborCoords(agent,all);
+	return coords
+		.filter(function(coord){
+			return coord[0] > agent.x; // get any neighbor to the right
+		})
+		.map(function(coord){
+			return Grid.array[coord[1]][coord[0]];
+		});
 }
 
 Grid.getAboveNeighbors = function(agent,all){
-    var coords = Grid.getNeighborCoords(agent);
-
-	if(all == true){
-		return coords
-			.filter(function(coord){
-				return coord[1] < agent.y;
-			})
-			.map(function(coord){
-				return Grid.array[coord[1]][coord[0]];
-			});
-	}
-	else{
-		return coords
-        .filter(function(coord){
-            return coord[1] < agent.y && coord[0] == agent.x;
-        })
-        .map(function(coord){
-            return Grid.array[coord[1]][coord[0]];
-        });
-	}
+    var coords = Grid.getNeighborCoords(agent,all);
+	return coords
+		.filter(function(coord){
+			return coord[1] < agent.y; // etc.
+		})
+		.map(function(coord){
+			return Grid.array[coord[1]][coord[0]];
+		});
 }
 
 Grid.getBelowNeighbors = function(agent,all){
-    var coords = Grid.getNeighborCoords(agent);
-
-	if(all == true){
-		return coords
-			.filter(function(coord){
-				return coord[1] > agent.y;
-			})
-			.map(function(coord){
-				return Grid.array[coord[1]][coord[0]];
-			});
-	}
-	else{
-		return coords
-			.filter(function(coord){
-				return coord[1] > agent.y && coord[0] == agent.x;
-			})
-			.map(function(coord){
-				return Grid.array[coord[1]][coord[0]];
-			});
-		}
+    var coords = Grid.getNeighborCoords(agent,all);
+	return coords
+		.filter(function(coord){
+			return coord[1] > agent.y;
+		})
+		.map(function(coord){
+			return Grid.array[coord[1]][coord[0]];
+		});
 }
 
-// Get ALL agents (just collapses to a single array)
+// Get ALL cells on the board (just collapses to a single array)
 Grid.getAllAgents = function(){
 
 	// Then, get all neighbors at those coords
@@ -365,18 +323,18 @@ Grid.getAllAgents = function(){
 
 	// Return!
 	return agents;
-
 };
 
 // Count neighbors of a certain state
-Grid.countNeighbors = function(agent,stateID){
+// I... don't think this function is actually used anywhere. Keeping it just in case though
+/*Grid.countNeighbors = function(agent,stateID){
 	var count = 0;
 	var neighbors = Grid.getAllNeighbors(agent);
 	for(var i=0;i<neighbors.length;i++){
 		if(neighbors[i].stateID==stateID) count++;
 	}
 	return count;
-};
+};*/
 
 // Reset world, update the view, and resize to fit
 Grid.reinitialize = function(){
@@ -413,14 +371,20 @@ Grid.createUI = function(){
 			.label("<br><br>")
 			.label("We start with this ratio of things:<br>")
 			.proportions()
-			.label("<br>")
+			
+			// WE DON'T NEED [[Neumann]] OR [[Moore]]
+			// WE DON'T NEED [[neighborhoods]]!!!
+			// gasp deltarune reference
+
+			// Anyway, the """ADVANCED""" Emoji Sim has selectors for all this neighborhood stuff
+			/*.label("<br>")
 			.label("And each thing considers ")
 			.selector([
 				{ name:"the 4 spots to its sides", value:Grid.NEIGHBORHOOD_NEUMANN },
 				{ name:"the 8 spots to its sides & corners", value:Grid.NEIGHBORHOOD_MOORE }
 			],config,"neighborhood",{
 				maxWidth: "none"
-			})
+			})*/
 			.label(" to be its neighboring spots.")
 			.dom;
 };
