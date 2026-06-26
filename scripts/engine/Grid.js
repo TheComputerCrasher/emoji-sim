@@ -65,14 +65,13 @@ var _getProportionalRandom = function(){
 Grid.step = function(){
 
 	// Update style
-	var UPDATE = Model.data.world.update;
+	var UPDATE = Model.data.world.updates;
 
-	// Shuffle update order, then do 'em all
-	var all = _shuffle(Grid.getAllAgents());
+	// Shuffle update order if the user wants, then do 'em all
+    var all = (Model.data.world.updates == 0) ? _shuffle(Grid.getAllAgents()) : Grid.getAllAgents();
 	for(var i=0;i<all.length;i++) all[i].markAsNotUpdated();
 	for(var i=0;i<all.length;i++) all[i].calculateNextState();
 	for(var i=0;i<all.length;i++) all[i].gotoNextState();
-
 };
 
 var _shuffle = function(array){
@@ -89,7 +88,6 @@ var _shuffle = function(array){
 		array[currentIndex] = array[randomIndex];
 		array[randomIndex] = temporaryValue;
 	}
-
 	return array;
 }
 
@@ -376,16 +374,21 @@ Grid.createUI = function(){
 			// WE DON'T NEED [[neighborhoods]]!!!
 			// gasp deltarune reference
 
-			// Anyway, the """ADVANCED""" Emoji Sim has selectors for all this neighborhood stuff
-			/*.label("<br>")
-			.label("And each thing considers ")
+			// Aaanyway, the """ADVANCED""" Emoji Sim has selectors for all this neighborhood stuff
+			.label("<br>")
+			/*.label("And each thing considers ")
 			.selector([
 				{ name:"the 4 spots to its sides", value:Grid.NEIGHBORHOOD_NEUMANN },
 				{ name:"the 8 spots to its sides & corners", value:Grid.NEIGHBORHOOD_MOORE }
 			],config,"neighborhood",{
 				maxWidth: "none"
-			})*/
-			.label(" to be its neighboring spots.")
+			})
+			.label(" to be its neighboring spots.")*/
+            .label("<br>And each spot is updated ")
+            .selector([
+                { name:"randomly", value: 0 },
+                { name:"in order", value: 1 }
+            ],config,"updates")
 			.dom;
 };
 })(window);
