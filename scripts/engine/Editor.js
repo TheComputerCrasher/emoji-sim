@@ -88,7 +88,7 @@ Editor.create = function(){
 	///// META STUFF /////
 	//////////////////////
 
-	var title = Editor.createTitle("<span>MISC</span> STUFF");
+	var title = Editor.createTitle("<span>META</span> STUFF");
 	Editor.dom.appendChild(title);
 
 	// Reset to original
@@ -102,6 +102,12 @@ Editor.create = function(){
 		Model.returnToBackup();
 	};
 	Editor.dom.appendChild(undoChanges);
+
+	// undo label
+	var undoLabel = Editor.createLabel("Click here to reset everything back to how it was when you loaded it.")
+	undoLabel.style.display = "block";
+	undoLabel.style.margin = "10px 0";
+	Editor.dom.appendChild(undoLabel);
 
 	// If options allow saving changes, and export data
 	if(UI.options.edit==UI.ADVANCED){
@@ -122,11 +128,10 @@ Editor.create = function(){
 			Save.uploadModel();
 		};
 		Editor.dom.appendChild(saveChanges);
-
-		// Save your changes, label & link, label & embed
 		
 		// save label
-		var saveLabel = Editor.createLabel("Click this button to save your model's rules! (It doesn't save the world state though.) When you save, you'll get a link here:")
+		var saveLabel = Editor.createLabel("Click this button to save your model's rules! "+
+			"(It doesn't save the world state though.) When you save, you'll get a link here:")
 		saveLabel.style.display = "block";
 		saveLabel.style.margin = "10px 0";
 		Editor.dom.appendChild(saveLabel);
@@ -224,25 +229,23 @@ Editor.create = function(){
 		
 
 		// hidden input
-		var importModel = document.createElement("input");
-		importModel.type = "file";
-		importModel.style.display = "none";
-		importModel.addEventListener("change", () => {
+		var importHidden = document.createElement("input");
+		importHidden.type = "file";
+		importHidden.style.display = "none";
+		importHidden.addEventListener("change", () => {
 			const file = importButton.files[0];
 			if (!file) return;
 			const reader = new FileReader();
-			reader.onload = () => {
-				return reader.result;
-			};
-			Load(reader.readAsText(file));
+			Load(JSON.parse(reader.readAsText(file)));
+			
 		});
 
 		importButton.onclick = () => {
-			importModel.value = "";
-			importModel.click();
+			importHidden.value = "";
+			importHidden.click();
 		};
 
-		Editor.dom.appendChild(importModel);
+		Editor.dom.appendChild(importHidden);
 		Editor.dom.appendChild(importButton);
 		Editor.dom.appendChild(importLabel);
 

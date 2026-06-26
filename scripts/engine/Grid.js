@@ -26,7 +26,6 @@ Grid.initialize = function(){
 	for(var i=0;i<agents.length;i++){
 		agents[i].forceState(_getProportionalRandom());
 	}
-
 };
 var _getProportionalRandom = function(){
 
@@ -53,22 +52,22 @@ var _getProportionalRandom = function(){
 		if(random<current){
 			return proportion.stateID;
 		}
-
 	}
 
 	// Whoops
 	console.error("Something messed up in the random state selector");
-
 }
 
 // Simultaneous Step
 Grid.step = function(){
 
-	// Update style
-	var UPDATE = Model.data.world.updates;
+	// Update style (unused)
+	//var UPDATE = Model.data.world.update;
 
-	// Shuffle update order if the user wants, then do 'em all
-    var all = (Model.data.world.updates == 0) ? _shuffle(Grid.getAllAgents()) : Grid.getAllAgents();
+	// Shuffle update order if the user wants or if it's unspecified, then do 'em all
+	// set 'all' to either _shuffle(Grid.getAllAgents()) or Grid.getAllAgents() 
+	// based on the result of (Model.data.world.updates == 0 || Model.data.world.updates == null)
+    var all = (Model.data.world.updates == 0 || Model.data.world.updates == null) ? _shuffle(Grid.getAllAgents()) : Grid.getAllAgents();
 	for(var i=0;i<all.length;i++) all[i].markAsNotUpdated();
 	for(var i=0;i<all.length;i++) all[i].calculateNextState();
 	for(var i=0;i<all.length;i++) all[i].gotoNextState();
@@ -101,7 +100,6 @@ subscribe("/ui/updateStateHeaders",function(){
 			}
 		}
 	}
-
 	publish("/grid/updateAgents");
 });
 
@@ -170,7 +168,6 @@ Grid.updateSize = function(){
 		html += "</div>";
 	}
 	Grid.dom.innerHTML = html;
-
 };
 subscribe("/grid/updateSize",Grid.updateSize,false);
 subscribe("ui/resize",Grid.updateSize,false);
@@ -187,11 +184,9 @@ Grid.updateAgents = function(){
 
 			if(icon!=currentIcon){
 				Grid.dom.children[y].children[x].innerHTML = icon;
-			}
-			
+			}	
 		}
 	}
-
 };
 subscribe("/grid/updateAgents",Grid.updateAgents);
 
@@ -213,8 +208,8 @@ Grid.getNeighborCoords = function(agent,all){
 
 	// What kinda neighborhood
 	var coords;
-	//var hood = Model.data.world.neighborhood;
-	if(all == true){
+	var hood = Model.data.world.neighborhood;
+	if(all == true && hood == "moore"){
 		var hood = Grid.NEIGHBORHOOD_MOORE
 	} else {
 		var hood = Grid.NEIGHBORHOOD_NEUMANN
@@ -245,7 +240,6 @@ Grid.getNeighborCoords = function(agent,all){
 
 	// Return!
 	return coords;
-
 };
 
 // Separated getting coords from getting neighbors to allow different sections of neighbors
@@ -282,7 +276,7 @@ Grid.getRightNeighbors = function(agent,all){
 			return coord[0] > agent.x; // get any neighbor to the right
 		})
 		.map(function(coord){
-			return Grid.array[coord[1]][coord[0]];
+			return Grid.array[coord[1]][coord[0]]; // find it in the grid array
 		});
 }
 
@@ -308,7 +302,7 @@ Grid.getBelowNeighbors = function(agent,all){
 		});
 }
 
-// Get ALL cells on the board (just collapses to a single array)
+// Get ALL coords on the board (just collapses to a single array)
 Grid.getAllAgents = function(){
 
 	// Then, get all neighbors at those coords
@@ -324,7 +318,7 @@ Grid.getAllAgents = function(){
 };
 
 // Count neighbors of a certain state
-// I... don't think this function is actually used anywhere. Keeping it just in case though
+// another seemingly unused function
 /*Grid.countNeighbors = function(agent,stateID){
 	var count = 0;
 	var neighbors = Grid.getAllNeighbors(agent);
@@ -351,6 +345,22 @@ Grid.createUI = function(){
 	var config = Model.data.world;
 
 	return EditorHelper()
+			.label("Each thing considers ")
+			.selector([
+				{ name:"the 4 spots to its sides", value:Grid.NEIGHBORHOOD_NEUMANN },
+				{ name:"the 8 spots to its sides & corners", value:Grid.NEIGHBORHOOD_MOORE }
+			],config,"neighborhood",{
+				maxWidth: "none"
+			})
+			.label(" to be its neighboring spots...")
+
+            .label("<br>Each spot is updated ")
+            .selector([
+                { name:"randomly", value: 0 },
+                { name:"in order", value: 1 }
+            ],config,"updates")
+			.label("...<br>")
+
 			.label("This world is a ")
 			.number(config.size, "width", {
 				integer:true,
@@ -365,30 +375,12 @@ Grid.createUI = function(){
 				step:1,
 				message:"/grid/reinitialize"
 			})
-			.label(" grid.")
-			.label("<br><br>")
-			.label("We start with this ratio of things:<br>")
-			.proportions()
-			
-			// WE DON'T NEED [[Neumann]] OR [[Moore]]
-			// WE DON'T NEED [[neighborhoods]]!!!
-			// gasp deltarune reference
+			.label(" grid...")
 
-			// Aaanyway, the """ADVANCED""" Emoji Sim has selectors for all this neighborhood stuff
 			.label("<br>")
-			/*.label("And each thing considers ")
-			.selector([
-				{ name:"the 4 spots to its sides", value:Grid.NEIGHBORHOOD_NEUMANN },
-				{ name:"the 8 spots to its sides & corners", value:Grid.NEIGHBORHOOD_MOORE }
-			],config,"neighborhood",{
-				maxWidth: "none"
-			})
-			.label(" to be its neighboring spots.")*/
-            .label("<br>And each spot is updated ")
-            .selector([
-                { name:"randomly", value: 0 },
-                { name:"in order", value: 1 }
-            ],config,"updates")
+			.label("And we start with this ratio of things:<br>")
+			.proportions()
+
 			.dom;
 };
 })(window);

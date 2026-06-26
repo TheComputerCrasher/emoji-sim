@@ -25,7 +25,6 @@ exports.PerformActions = function(agent, actionConfigs){
 		action.step(agent,config);
 		if(agent.nextStateID!=initialNextState) return;
 	}
-	
 };
 
 // GO_TO_STATE: Simply go to that state
@@ -45,7 +44,6 @@ Actions.go_to_state = {
 				.stateSelector(config, "stateID")
 				.dom;
 	}
-
 };
 
 // IF_NEIGHBOR: If more/less/equal X neighbors are a certain state, do a thing
@@ -139,12 +137,11 @@ Actions.if_neighbor = {
 		if(pass){
 			PerformActions(agent, config.actions);
 		}
-
 	},
 
 	ui: function(config){
-
-		return EditorHelper()
+		if(Model.data.world.neighborhood == "moore") { 
+			return EditorHelper()
 				.label("If ")
 				.selector([
 					{ name:"less than (<)", value:"<" },
@@ -161,9 +158,7 @@ Actions.if_neighbor = {
 				})
 				.label(" neighbors ")
                 .selector([ 
-					// lots more neighbor options than the original.
-					// is it confusing? probably.
-					// do I care? not really, no one's gonna use this.
+					// if neighborhood big, give all the options.
                     { name:"all around", value: 0 },
                     { name:"to the left", value: 1 },
                     { name:"to the right", value: 2 },
@@ -179,8 +174,37 @@ Actions.if_neighbor = {
 				.stateSelector(config, "stateID")
 				.actionsUI(config.actions)
 				.dom;
+		} else {
+			return EditorHelper()
+				.label("If ")
+				.selector([
+					{ name:"less than (<)", value:"<" },
+					{ name:"up to (≤)", value:"<=" },
+					{ name:"more than (>)", value:">" },
+					{ name:"at least (≥)", value:">=" },
+					{ name:"exactly (=)", value:"=" }
+				],config,"sign")
+				.label(" ")
+				.number(config, "num", {
+					integer:true,
+					min:0, max:8,
+					step:1
+				})
+				.label(" neighbors ")
+                .selector([
+					// if neighborhood small, give only the options that matter.
+                    { name:"all around", value: 0 },
+                    { name:"to the left", value: 1 },
+                    { name:"to the right", value: 2 },
+                    { name:"above", value: 3 },
+                    { name:"below", value: 4 }
+                ],config,"area")
+                .label(" are ")
+				.stateSelector(config, "stateID")
+				.actionsUI(config.actions)
+				.dom;
+		}
 	}
-
 };
 
 // IF_RANDOM: With a X% chance, do a thing
@@ -199,7 +223,6 @@ Actions.if_random = {
 		if(Math.random()<config.probability){
 			PerformActions(agent, config.actions);
 		}
-
 	},
 
 	ui: function(config){
@@ -214,9 +237,7 @@ Actions.if_random = {
 				.label("% chance,")
 				.actionsUI(config.actions)
 				.dom;
-
 	}
-
 };
 
 // MOVE_TO: Move to a (nearby|global) (state) spot in and leave behind (state) 
@@ -277,12 +298,11 @@ Actions.move_to = {
 
 		// Turn my state to leaveState
 		agent.nextStateID = config.leaveStateID;
-
 	},
 
 	ui: function(config){
-
-		return EditorHelper()
+		if(Model.data.world.neighborhood == "moore") {
+			return EditorHelper()
 				.label("Move ")
 				.selector([ 
 					// WOWIE SO MUCH MOVEMENT
@@ -290,7 +310,7 @@ Actions.move_to = {
 					// As long as they stay in order in the code,
 					// it should be fine to change their positions here.
 					{ name:"to any", value:1 },
-					{ name:"to any neighboring", value:0 },
+					{ name:"to any adjacent", value:0 },
                     { name:"left to",value:2 },
                     { name:"right to",value:3 },
                     { name:"up to",value:4 },
@@ -305,6 +325,23 @@ Actions.move_to = {
 				.label(" & leave behind ")
 				.stateSelector(config, "leaveStateID")
 				.dom;
+		} else {
+			return EditorHelper()
+				.label("Move ")
+				.selector([ 
+					// again, if neighborhood small, give less options
+					{ name:"to any", value:1 },
+					{ name:"to any adjacent", value:0 },
+                    { name:"left to",value:2 },
+                    { name:"right to",value:3 },
+                    { name:"up to",value:4 },
+                    { name:"down to",value:5 }
+				],config,"space")
+				.stateSelector(config, "spotStateID")
+				.label(" & leave behind ")
+				.stateSelector(config, "leaveStateID")
+				.dom;
+		}
 	}
 }; 
 })(window);
