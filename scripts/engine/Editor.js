@@ -104,7 +104,7 @@ Editor.create = function(){
 	Editor.dom.appendChild(undoChanges);
 
 	// undo label
-	var undoLabel = Editor.createLabel("Click here to reset everything back to how it was when you loaded it.")
+	var undoLabel = Editor.createLabel("Reset everything back to how it was when you loaded it.")
 	undoLabel.style.display = "block";
 	undoLabel.style.margin = "10px 0";
 	Editor.dom.appendChild(undoLabel);
@@ -130,8 +130,8 @@ Editor.create = function(){
 		Editor.dom.appendChild(saveChanges);
 		
 		// save label
-		var saveLabel = Editor.createLabel("Click this button to save your model's rules! "+
-			"(It doesn't save the world state though.) When you save, you'll get a link here:")
+		var saveLabel = Editor.createLabel("Save your model's rules! "+
+			"(But not the world state.) When you save, you'll get a link here:")
 		saveLabel.style.display = "block";
 		saveLabel.style.margin = "10px 0";
 		Editor.dom.appendChild(saveLabel);
@@ -170,7 +170,7 @@ Editor.create = function(){
 		// on save success
 		subscribe("/save/success",function(link){
 
-			saveLabel.innerHTML = "Here you go! <a href='"+link+"' target='_blank'>(open in new tab)</a> (shrink link with a site like <a href='https://tinyurl.com/' target='_blank'>TinyURL</a>)";
+			saveLabel.innerHTML = "Here you go! <a href='"+link+"' target='_blank'>(open in new tab)</a> You can shrink the link with a site like <a href='https://tinyurl.com/' target='_blank'>TinyURL</a>, or just bookmark it.";
 			saveLink.value = link;
 			saveLink.select();
 			embedLabel.innerHTML = "to embed it, paste this code in your site:";
@@ -203,32 +203,32 @@ Editor.create = function(){
 
 		// export label 
 		var exportLabel = Editor.createLabel(
-			"This button will save your sim as a file instead of a link. "+
-			"You can import it later with the button below, "+
+			"Save your sim as a file instead of a link! "+
+			"You can import it later with the button below (once I get it working...), "+
 			"or you can run this file locally! "+
-			"<a href='https://github.com/ncase/sim#how-to-run-this-on-your-own-computertron' target='_blank'>[How To Do That]</a><br><br> "
+			"<a href='https://github.com/thecomputercrasher/emoji-sim-advanced#how-to-run-this-on-your-own-computertron' target='_blank'>[How To Do That]</a><br><br> "
 		);
 		exportLabel.style.display = "block";
 		exportLabel.style.margin = "10px 0";
 		Editor.dom.appendChild(exportLabel);
 
 
-		// Import button!!! Finally!!! (not quite yet)
+		// Import button
 		var importButton = document.createElement("div");
 		importButton.className = "editor_fancy_button";
 		importButton.id = "load_changes";
-		importButton.innerHTML = "<span style='font-size:25px; line-height:35px; font-family:monospace'>{}</span>import model";
+		importButton.innerHTML = "<span style='font-size:25px; line-height:35px; font-family:monospace'>↓</span>import model";
 		importButton.accept = "text/json";
 
 		// import label
 		var importLabel = Editor.createLabel(
-			"Coming soon..."
+			"Coming soon, hopefully"
 		);
 		importLabel.style.display = "block";
 		importLabel.style.margin = "10px 0";
 		
 
-		// hidden input
+		// hidden input (currently broken)
 		var importHidden = document.createElement("input");
 		importHidden.type = "file";
 		importHidden.style.display = "none";
@@ -237,7 +237,6 @@ Editor.create = function(){
 			if (!file) return;
 			const reader = new FileReader();
 			Load(JSON.parse(reader.readAsText(file)));
-			
 		});
 
 		importButton.onclick = () => {
@@ -251,12 +250,16 @@ Editor.create = function(){
 
 		// CREDITS
 		var creditsLabel = Editor.createLabel(`
-			Originally made by <a href='https://ncase.me/' target='_blank'>Nicky Case</a>,
-			with the 💖 of their supporters
-			<a href='https://www.patreon.com/ncase' target='_blank'>on Patreon</a>,
-			and modified by <a href='https://github.com/TheComputerCrasher/' target='_blank'>TheComputerCrasher</a>.
+			Originally made by <a href='https://ncase.me/' target='_blank'>Nicky Case</a>, 
+			with the 💖 of their supporters on 
+			<a href='https://www.patreon.com/ncase' target='_blank'>Patreon</a>.
 			<br>
-			p.s: <a href='https://github.com/thecomputercrasher/emoji-sim' target='_blank'>public domain!</a>
+			This advanced version was created by 
+			<a href='https://linktr.ee/thecomputercrasher/' target='_blank'>TheComputerCrasher</a> 
+			on <a href='https://github.com/TheComputerCrasher/emoji-sim-advanced' target='_blank'>GitHub</a>.
+			<br>
+			p.s.: Both this and the original are 
+			<a href='https://github.com/thecomputercrasher/emoji-sim-advanced' target='_blank'>public domain</a>!
 		`);
 		creditsLabel.style.display = "block";
 		creditsLabel.style.margin = "30px 0";
