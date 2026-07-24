@@ -119,7 +119,7 @@ Editor.create = function(){
 		var saveChanges = document.createElement("div");
 		saveChanges.className = "editor_fancy_button";
 		saveChanges.id = "save_changes";
-		saveChanges.innerHTML = "<span style='font-size:30px; line-height:40px'>★</span>save your model";
+		saveChanges.innerHTML = "<span style='font-size:30px; line-height:40px'>★</span>save as a link";
 		saveChanges.onclick = function(){
 			saveLabel.innerHTML = "saving...";
 			embedLabel.innerHTML = "...";
@@ -130,8 +130,9 @@ Editor.create = function(){
 		Editor.dom.appendChild(saveChanges);
 		
 		// save label
-		var saveLabel = Editor.createLabel("Save your model's rules! "+
-			"(But not the world state.) When you save, you'll get a link here:")
+		var saveLabel = Editor.createLabel("Save the rules of your model! "+
+			"(But not the world state.) "+ 
+			"When you save, you'll get a link here:")
 		saveLabel.style.display = "block";
 		saveLabel.style.margin = "10px 0";
 		Editor.dom.appendChild(saveLabel);
@@ -184,10 +185,12 @@ Editor.create = function(){
 		var exportModel = document.createElement("div");
 		exportModel.className = "editor_fancy_button";
 		exportModel.id = "save_changes";
-		exportModel.innerHTML = "<span style='font-size:25px; line-height:35px; font-family:monospace'>{}</span>export model";
+		exportModel.innerHTML = "<span style='font-size:25px; line-height:35px; font-family:monospace'>↓</span>save as a file";
 		exportModel.onclick = function(){
-			// This code is copied from https://www.delftstack.com/howto/javascript/javascript-create-and-save-files/
-			// Basically it makes a link from the model data, clicks it for the download, and removes the link.
+			// This code is copied from 
+			// https://www.delftstack.com/howto/javascript/javascript-create-and-save-files/
+			// Basically it makes a link from the model data, 
+			// clicks it for the download, and removes the link.
 			const modelData = JSON.stringify(Model.data);
 			const blob = new Blob([modelData], { type: 'text/json' });
 			const url = URL.createObjectURL(blob);
@@ -204,9 +207,11 @@ Editor.create = function(){
 		// export label 
 		var exportLabel = Editor.createLabel(
 			"Save your sim as a file instead of a link! "+
-			"You can import it later with the button below (once I get it working...), "+
+			"You can import it later with the button below, "+
 			"or you can run this file locally! "+
-			"<a href='https://github.com/thecomputercrasher/emoji-sim-advanced#how-to-run-this-on-your-own-computertron' target='_blank'>[How To Do That]</a><br><br> "
+			"<a href='https://github.com/thecomputercrasher/emoji-sim-advanced#how-to-run-this-on-your-own-computertron' target='_blank'>[How To Do That]</a>"+
+			"<br>"+
+			"<br>"
 		);
 		exportLabel.style.display = "block";
 		exportLabel.style.margin = "10px 0";
@@ -217,33 +222,66 @@ Editor.create = function(){
 		var importButton = document.createElement("div");
 		importButton.className = "editor_fancy_button";
 		importButton.id = "load_changes";
-		importButton.innerHTML = "<span style='font-size:25px; line-height:35px; font-family:monospace'>↓</span>import model";
+		importButton.innerHTML = "<span style='font-size:25px; line-height:35px; font-family:monospace'>{}</span>import from a file";
 		importButton.accept = "text/json";
 
 		// import label
 		var importLabel = Editor.createLabel(
-			"Coming soon, hopefully"
+			"Import a sim saved as a .json file! "+
+			"(Again though, doesn't include the world state.)"
 		);
 		importLabel.style.display = "block";
 		importLabel.style.margin = "10px 0";
 		
 
-		// hidden input (currently broken)
+		// hidden input
 		var importHidden = document.createElement("input");
 		importHidden.type = "file";
 		importHidden.style.display = "none";
 		importHidden.addEventListener("change", () => {
-			const file = importButton.files[0];
+			var file = importHidden.files[0];
 			if (!file) return;
-			const reader = new FileReader();
-			Load(JSON.parse(reader.readAsText(file)));
+
+			// use built-in JS FileReader to ask for a file
+			var reader = new FileReader();
+
+			// literally just onLoadSuccess from Load.js
+			// because I can't figure out how to call it from here
+			reader.onload = () => {
+				var model = JSON.parse(reader.result);
+				var _mustHaveActions = function(array){
+				for(var i=0;i<array.length;i++){
+					var item = array[i];
+					item.actions = item.actions || [];
+					_mustHaveActions(item.actions);
+				}
+				};
+				_mustHaveActions(model.states);
+
+				// DESTROY THE OLD UI!
+				// Without this it stacks up editor UIs 
+				// every time you load a file.
+				// It looks pretty funny though
+				Editor.dom.innerHTML = "";
+
+				// Show the new UI
+				document.body.style.display = "block";
+
+				// Now init 'em
+				Model.init(model);
+			};
+
+			// read that file!
+			reader.readAsText(file);
 		});
 
+		// click the hidden thingy to start the load process
 		importButton.onclick = () => {
 			importHidden.value = "";
 			importHidden.click();
 		};
 
+		// When everything's set up, add it to the page.
 		Editor.dom.appendChild(importHidden);
 		Editor.dom.appendChild(importButton);
 		Editor.dom.appendChild(importLabel);
