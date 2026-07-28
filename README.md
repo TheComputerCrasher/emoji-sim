@@ -1,6 +1,6 @@
 # Emoji Simulator (Advanced)!
 
-Originally made by [Nicky Case](https://ncase.me/), and modified by TheComputerCrasher. 
+Originally made by [Nicky Case](https://ncase.me/), and expanded upon by TheComputerCrasher. 
 
 **My additions:**
 * More built-in simulations, including [Langton's Ant](https://wikipedia.org/wiki/Langton%27s_ant) and (a very basic version of) [Sandboxels](https://sandboxels.r74n.com/)!
@@ -8,7 +8,7 @@ Originally made by [Nicky Case](https://ncase.me/), and modified by TheComputerC
 * Fixes for some of the [issues](https://github.com/ncase/sim/issues) in [the original project](https://ncase.me/sim/)!
 * Unused features reimplemented!
 * Complete backwards compatibility with projects made in the original!
-* A Python script to convert cellular automata rules into Emoji Sims!
+* A Python script to convert certain cellular automata rules into Emoji Sim models!
 * More complicated and harder to understand!
 * Wait, what was that last one?
 
@@ -35,20 +35,18 @@ They're all open source! Unlike this project though, they're not public domain, 
 * [Perfect Scrollbar](https://github.com/noraesae/perfect-scrollbar-bower) - Custom scrollbars, mostly because of a MacOS issue.
 * [requestAnimationFrame shim](https://gist.github.com/paulirish/1579671) - A requestAnimationFrame polyfill.
 * [reqwest](https://github.com/ded/reqwest) - A tiny XMLHttpRequest library.
-* [Platform.js](https://github.com/bestiejs/platform.js) - To test browser/OS, because there is apparently no good emoji feature detection.
-* [alife](https://github.com/Lehnart/alife) - Helped me understand some poorly-documented cellular automata.
+* [Platform.js](https://github.com/bestiejs/platform.js) - To test browser/OS, because there is apparently no good emoji feature detection. (Unused)
+* [alife](https://github.com/Lehnart/alife) - Helped me understand some poorly-documented cellular automata like the Chou-Reggia loops.
 
 **Font Stuff:**
-* [Sniglet](https://www.https://github.com/Lehnart/alifetheleagueofmoveabletype.com/sniglet) - For the title splash.
-* [OpenSansEmoji](https://github.com/MorbZ/OpenSansEmoji) - Fallback font if your browser doesn't support emoji.
-* (Note: these are unused in the final version of Emoji Sim, but they're still present so I'll keep them credited.)
+* [Sniglet](https://www.https://github.com/Lehnart/alifetheleagueofmoveabletype.com/sniglet) - For the title splash. (Unused)
+* [OpenSansEmoji](https://github.com/MorbZ/OpenSansEmoji) - Fallback font if your browser doesn't support emoji. (Unused)
 
 ## Ambitious To-Do List
-* GET THE STUPID LOAD MODEL BUTTON WORKING
 * Get Graph.js working (it's been broken and unused since the [very first version of the original](https://github.com/ncase/simulating-wip/commit/c4d2d81b246819cdb2fdf5c3f71848271d1059f8))
-* The rest of these ideas have been implemented much better by [Sandspiel Studio](https://studio.sandspiel.club), check it out if you're interested in very complex cellular automata!
-* Maybe let the user optionally save the world state by exporting Grid.array along with the usual Model.data in Editor.js and Save.js
-  * Try to optimize this by making the most common cell the default and only saving non-default cells
-* Maybe add boolean operators (probably just OR for now) - [ncase/sim/issues/2](https://github.com/ncase/sim/issues/2) - "if exactly x neighbors are this OR that", "move left OR right", "move to this OR that", etc.
-  * I guess I would have to add an "or..." button to these actions, which is kinda outside my capabilities at the moment.
-* Maybe let cells have a single variable each, and/or let each type of cell have a single variable each. Some kind of variable besides the cell state so you don't have to remake tons of lines to clone a complicated cell's functionality.
+* The following ideas have been implemented much better by [Sandspiel Studio](https://studio.sandspiel.club), check it out if you're interested in very complex cellular automata!
+  * Let the user optionally save the world state by exporting Grid.array along with the usual Model.data in Editor.js and Save.js
+    * Try to optimize this by making the most common cell the default and only saving the positions of non-default cells
+  * Maybe add boolean operators (probably just OR for now) - [ncase/sim/issues/2](https://github.com/ncase/sim/issues/2) - "if exactly x neighbors are this OR that", "move left OR right", "move to this OR that", etc.
+    * I would probably have to add an "or..." button to all of these actions, which is kinda outside my capabilities at the moment.
+  * Maybe let cells have a single variable each, and/or let each type of cell have a single variable each. Some kind of variable besides the cell state so you don't have to remake tons of lines to clone a complicated cell's functionality.
